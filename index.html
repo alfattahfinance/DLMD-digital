@@ -1,123 +1,140 @@
-nt = data.title;  
-  tftContentArea.innerHTML = data.content;  
-  tftFooterChannel.textContent = data.footerCh;  
-  tftFooterStatus.textContent = data.footerSt;  
-  updateEncoders(data.encoders);  
-}  
-  
-consoleSectionBtns.forEach(btn => {  
-  btn.addEventListener("click", () => {  
-    consoleSectionBtns.forEach(b => b.classList.remove("active"));  
-    btn.classList.add("active");  
-    loadTftPage(btn.getAttribute("data-section"));  
-  });  
-});  
-  
-tftTabs.forEach(tab => {  
-  tab.addEventListener("click", () => {  
-    tftTabs.forEach(t => t.classList.remove("active"));  
-    tab.classList.add("active");  
-    loadTftPage(tab.getAttribute("data-tft-tab"));  
-  });  
-});  
-  
-loadTftPage("config");  
-  
-/* =========================================================  
-   LOGIKA METER LED REAL-TIME 2-CHANNEL  
-========================================================= */  
-function startRealMeters() {  
-  if (meterAnimationId) return;  
-  const meterBuffers = [new Uint8Array(1024), new Uint8Array(1024)];  
-  const vertMeterBuffers = [new Uint8Array(512), new Uint8Array(512), new Uint8Array(512), new Uint8Array(512), new Uint8Array(512)];  
-    
-  function updateAllMeters() {  
-    meterAnimationId = requestAnimationFrame(updateAllMeters);  
-  
-    const isAudioRunning = audioContext && audioContext.state === "running" && isPlaying;  
-  
-    audioChannels.forEach((audioChannel, index) => {  
-      const channel = channels[index];  
-      if (!channel) return;  
-      const meter = channel.querySelector(".meter");  
-      const clip = channel.querySelector(".clip");  
-      if (!meter || !clip) return;  
-  
-      if (!isAudioRunning || !audioChannel.analyser) {  
-        meter.innerHTML = "";  
-        for (let s = 0; s < 12; s++) {  
-          const seg = document.createElement("span");  
-          if (s >= 9) seg.classList.add("red"); else if (s >= 7) seg.classList.add("yellow"); else seg.classList.add("green");  
-          meter.appendChild(seg);  
-        }  
-        clip.classList.remove("on");  
-        return;  
-      }  
-  
-      const buffer = meterBuffers[index];  
-      audioChannel.analyser.getByteTimeDomainData(buffer);  
-  
-      let sum = 0, peak = 0;  
-      for (let i = 0; i < buffer.length; i++) {  
-        const sample = (buffer[i] - 128) / 128;  
-        sum += sample * sample;  
-        if (Math.abs(sample) > peak) peak = Math.abs(sample);  
-      }  
-  
-      let rms = Math.sqrt(sum / buffer.length);  
-      const db = 20 * Math.log10(Math.max(rms, 0.0001));  
-      const level = rms < 0.001 ? 0 : Math.max(1, Math.min(12, Math.round(((db + 50) / 50) * 12)));  
-  
-      meter.innerHTML = "";  
-      for (let segmentIndex = 0; segmentIndex < 12; segmentIndex++) {  
-        const segment = document.createElement("span");  
-        if (segmentIndex >= 9) segment.classList.add("red");  
-        else if (segmentIndex >= 7) segment.classList.add("yellow");  
-        else segment.classList.add("green");  
-        if (segmentIndex < level) segment.classList.add("on");  
-        meter.appendChild(segment);  
-      }  
-      clip.classList.toggle("on", peak >= 0.95);  
-    });  
-  
-    const mixerMeters = [  
-      document.querySelectorAll("#mixerMeter1 span"),  
-      document.querySelectorAll("#mixerMeter2 span"),  
-      document.querySelectorAll("#mixerMeter3 span"),  
-      document.querySelectorAll("#mixerMeter4 span"),  
-      document.querySelectorAll("#mixerMeterMaster span")  
-    ];  
-  
-    mixerMeters.forEach((meterSpans, mIdx) => {  
-      if (!meterSpans || meterSpans.length === 0) return;  
-      if (!isAudioRunning) { meterSpans.forEach(span => span.classList.remove("on")); return; }  
-  
-      let rms = 0;  
-      const sourceAnalyzerIdx = mIdx < 2 ? mIdx : 0;   
-      if (audioChannels[sourceAnalyzerIdx] && audioChannels[sourceAnalyzerIdx].analyser) {  
-        try {  
-          const analyser = audioChannels[sourceAnalyzerIdx].analyser;  
-          analyser.getByteTimeDomainData(vertMeterBuffers[mIdx]);  
-          let sum = 0;  
-          for (let i = 0; i < vertMeterBuffers[mIdx].length; i++) {  
-            let sample = (vertMeterBuffers[mIdx][i] - 128) / 128;  
-            sum += sample * sample;  
-          }  
-          rms = Math.sqrt(sum / vertMeterBuffers[mIdx].length);  
-        } catch (e) { rms = 0; }  
-      }  
-  
-      const db = 20 * Math.log10(Math.max(rms, 0.0001));  
-      const activeCount = rms < 0.001 ? 0 : Math.max(1, Math.min(10, Math.round(((db + 50) / 50) * 10)));  
-  
-      meterSpans.forEach((span, idx) => {  
-        const reverseIdx = meterSpans.length - 1 - idx;  
-        if (reverseIdx < activeCount) span.classList.add("on"); else span.classList.remove("on");  
-      });  
-    });  
-  }  
-  updateAllMeters();  
-}  
-  </script>  
-</body>  
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#aeb3b8">
+<title>DLMD Digital — Body Mockup</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --aluminium: #b8bdc2;
+    --aluminium-light: #d8dbde;
+    --aluminium-dark: #858b91;
+    --panel: #202326;
+    --panel-edge: #080909;
+  }
+  * { box-sizing: border-box; }
+  html, body { min-height: 100%; margin: 0; }
+  body {
+    display: grid;
+    place-items: center;
+    padding: clamp(12px, 3vw, 36px);
+    background: #303337;
+    color: #e7e9eb;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .workbench { width: min(1100px, 100%); }
+  .caption {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px; margin: 0 2px 12px; color: #b9bdc1;
+    font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+  }
+  .console {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1.78 / 1;
+    min-height: 230px;
+    padding: clamp(10px, 2.1vw, 24px);
+    border: 1px solid #e0e2e4;
+    border-radius: 7px;
+    background: linear-gradient(155deg, #d5d8db 0%, #b9bec3 24%, #9ca2a8 70%, #c5c9cd 100%);
+    box-shadow: 0 2px 0 #777d83, 0 5px 0 #666c72, 0 18px 35px #0008;
+  }
+  .top-lip {
+    height: 8px; margin: -4px 1px 12px;
+    border-radius: 2px;
+    background: linear-gradient(#e6e8ea, #a2a7ac);
+    box-shadow: inset 0 1px 0 #fff9, 0 1px 1px #5558;
+  }
+  .faceplate {
+    position: relative;
+    height: calc(100% - 20px);
+    min-height: 190px;
+    border: 1px solid #70767c;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #282b2e, #1b1d1f 65%, #24272a);
+    box-shadow: inset 0 1px 2px #000, 0 1px 0 #edf0f280;
+    overflow: hidden;
+  }
+  .faceplate::before {
+    content: ""; position: absolute; inset: 0;
+    pointer-events: none;
+    background: linear-gradient(110deg, #ffffff05 0%, transparent 25%, transparent 75%, #ffffff04 100%);
+  }
+  .brand {
+    position: absolute; top: 6%; left: 5%;
+    color: #c7cbd0; font-size: clamp(10px, 1.6vw, 16px);
+    font-weight: 700; letter-spacing: .17em;
+  }
+  .model {
+    position: absolute; top: 6%; right: 5%;
+    color: #888e94; font-size: clamp(8px, 1.1vw, 11px);
+    letter-spacing: .12em;
+  }
+  .blank-area {
+    position: absolute; left: 4%; right: 4%; top: 18%; bottom: 13%;
+    border: 1px solid #3d4145; border-radius: 2px;
+    background: #202326;
+    box-shadow: inset 0 2px 7px #0008, 0 1px 0 #ffffff08;
+  }
+  .bottom-rail {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 8%;
+    min-height: 12px;
+    border-top: 1px solid #101112;
+    background: linear-gradient(#25282b, #17191b);
+  }
+  .screw {
+    position: absolute; width: 8px; height: 8px; border-radius: 50%;
+    background: linear-gradient(135deg, #e1e4e7, #777e84 55%, #c3c7cb);
+    border: 1px solid #6e747a;
+    box-shadow: 0 1px 1px #0009;
+  }
+  .screw::after {
+    content: ""; position: absolute; left: 1px; right: 1px; top: 3px;
+    height: 1px; background: #555b60; transform: rotate(-28deg);
+  }
+  .s1 { top: 8px; left: 8px; } .s2 { top: 8px; right: 8px; }
+  .s3 { bottom: 8px; left: 8px; } .s4 { bottom: 8px; right: 8px; }
+  .feet {
+    display: flex; justify-content: space-between;
+    margin: 7px 5% 0; height: 8px;
+  }
+  .foot {
+    width: 13%; border-radius: 0 0 3px 3px;
+    background: linear-gradient(#676d72, #17191b);
+    box-shadow: 0 3px 4px #0008;
+  }
+  .note {
+    margin: 15px 2px 0; color: #b9bdc1;
+    font-size: 12px; line-height: 1.5;
+  }
+  @media (max-width: 520px) {
+    body { padding: 14px 10px; }
+    .console { aspect-ratio: 1.35 / 1; min-height: 250px; padding: 10px; }
+    .faceplate { min-height: 205px; }
+    .blank-area { top: 20%; bottom: 14%; }
+    .caption { font-size: 9px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<main class="workbench">
+  <div class="caption"><span>DLMD Digital</span><span>Body / Chassis — Draft 01</span></div>
+  <section class="console" aria-label="Mockup rangka mixer digital warna silver">
+    <div class="top-lip"></div>
+    <div class="faceplate">
+      <span class="brand">DLMD DIGITAL</span>
+      <span class="model">AUDIO CONTROL UNIT</span>
+      <div class="blank-area" aria-label="Panel kosong untuk rancangan kontrol berikutnya"></div>
+      <div class="bottom-rail"></div>
+      <i class="screw s1"></i><i class="screw s2"></i>
+      <i class="screw s3"></i><i class="screw s4"></i>
+    </div>
+  </section>
+  <div class="feet"><span class="foot"></span><span class="foot"></span></div>
+  <p class="note">Tahap ini hanya rangka/body warna silver dan panel kosong. Fader, knob, meter, layar, serta tombol belum ditambahkan.</p>
+</main>
+</body>
 </html>

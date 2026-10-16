@@ -1,140 +1,264 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#aeb3b8">
-<title>DLMD Digital — Body Mockup</title>
-<style>
-  :root {
-    color-scheme: dark;
-    --aluminium: #b8bdc2;
-    --aluminium-light: #d8dbde;
-    --aluminium-dark: #858b91;
-    --panel: #202326;
-    --panel-edge: #080909;
-  }
-  * { box-sizing: border-box; }
-  html, body { min-height: 100%; margin: 0; }
-  body {
-    display: grid;
-    place-items: center;
-    padding: clamp(12px, 3vw, 36px);
-    background: #303337;
-    color: #e7e9eb;
-    font-family: Arial, Helvetica, sans-serif;
-  }
-  .workbench { width: min(1100px, 100%); }
-  .caption {
-    display: flex; justify-content: space-between; align-items: baseline;
-    gap: 12px; margin: 0 2px 12px; color: #b9bdc1;
-    font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
-  }
-  .console {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1.78 / 1;
-    min-height: 230px;
-    padding: clamp(10px, 2.1vw, 24px);
-    border: 1px solid #e0e2e4;
-    border-radius: 7px;
-    background: linear-gradient(155deg, #d5d8db 0%, #b9bec3 24%, #9ca2a8 70%, #c5c9cd 100%);
-    box-shadow: 0 2px 0 #777d83, 0 5px 0 #666c72, 0 18px 35px #0008;
-  }
-  .top-lip {
-    height: 8px; margin: -4px 1px 12px;
-    border-radius: 2px;
-    background: linear-gradient(#e6e8ea, #a2a7ac);
-    box-shadow: inset 0 1px 0 #fff9, 0 1px 1px #5558;
-  }
-  .faceplate {
-    position: relative;
-    height: calc(100% - 20px);
-    min-height: 190px;
-    border: 1px solid #70767c;
-    border-radius: 3px;
-    background: linear-gradient(180deg, #282b2e, #1b1d1f 65%, #24272a);
-    box-shadow: inset 0 1px 2px #000, 0 1px 0 #edf0f280;
-    overflow: hidden;
-  }
-  .faceplate::before {
-    content: ""; position: absolute; inset: 0;
-    pointer-events: none;
-    background: linear-gradient(110deg, #ffffff05 0%, transparent 25%, transparent 75%, #ffffff04 100%);
-  }
-  .brand {
-    position: absolute; top: 6%; left: 5%;
-    color: #c7cbd0; font-size: clamp(10px, 1.6vw, 16px);
-    font-weight: 700; letter-spacing: .17em;
-  }
-  .model {
-    position: absolute; top: 6%; right: 5%;
-    color: #888e94; font-size: clamp(8px, 1.1vw, 11px);
-    letter-spacing: .12em;
-  }
-  .blank-area {
-    position: absolute; left: 4%; right: 4%; top: 18%; bottom: 13%;
-    border: 1px solid #3d4145; border-radius: 2px;
-    background: #202326;
-    box-shadow: inset 0 2px 7px #0008, 0 1px 0 #ffffff08;
-  }
-  .bottom-rail {
-    position: absolute; left: 0; right: 0; bottom: 0; height: 8%;
-    min-height: 12px;
-    border-top: 1px solid #101112;
-    background: linear-gradient(#25282b, #17191b);
-  }
-  .screw {
-    position: absolute; width: 8px; height: 8px; border-radius: 50%;
-    background: linear-gradient(135deg, #e1e4e7, #777e84 55%, #c3c7cb);
-    border: 1px solid #6e747a;
-    box-shadow: 0 1px 1px #0009;
-  }
-  .screw::after {
-    content: ""; position: absolute; left: 1px; right: 1px; top: 3px;
-    height: 1px; background: #555b60; transform: rotate(-28deg);
-  }
-  .s1 { top: 8px; left: 8px; } .s2 { top: 8px; right: 8px; }
-  .s3 { bottom: 8px; left: 8px; } .s4 { bottom: 8px; right: 8px; }
-  .feet {
-    display: flex; justify-content: space-between;
-    margin: 7px 5% 0; height: 8px;
-  }
-  .foot {
-    width: 13%; border-radius: 0 0 3px 3px;
-    background: linear-gradient(#676d72, #17191b);
-    box-shadow: 0 3px 4px #0008;
-  }
-  .note {
-    margin: 15px 2px 0; color: #b9bdc1;
-    font-size: 12px; line-height: 1.5;
-  }
-  @media (max-width: 520px) {
-    body { padding: 14px 10px; }
-    .console { aspect-ratio: 1.35 / 1; min-height: 250px; padding: 10px; }
-    .faceplate { min-height: 205px; }
-    .blank-area { top: 20%; bottom: 14%; }
-    .caption { font-size: 9px; }
-  }
-  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DLMD Digital - Chassis</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --silver-light: #e2e4e6;
+      --silver-mid: #aeb3b8;
+      --silver-dark: #737980;
+      --panel: #171a1d;
+      --panel-edge: #080a0c;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: #24272a;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #fff;
+    }
+
+    .workspace {
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .device {
+      width: 100%;
+      position: relative;
+      padding: 16px;
+      border: 1px solid #f1f2f3;
+      border-radius: 9px;
+      background: linear-gradient(
+        180deg,
+        #e5e7e9 0%,
+        #c6cacf 16%,
+        #969ca2 50%,
+        #c9cdd1 84%,
+        #858b91 100%
+      );
+      box-shadow:
+        0 3px 0 #656a70,
+        0 12px 25px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    }
+
+    .top-edge {
+      height: 8px;
+      margin: -6px 14px 10px;
+      border-radius: 3px;
+      background: linear-gradient(
+        180deg,
+        #777d83,
+        #c5c9cd,
+        #8d9399
+      );
+    }
+
+    .front-panel {
+      position: relative;
+      min-height: 330px;
+      padding: 20px;
+      overflow: hidden;
+      border: 2px solid #565b60;
+      border-radius: 4px;
+      background: linear-gradient(
+        180deg,
+        #202428,
+        #111416 55%,
+        #1b1e21
+      );
+      box-shadow:
+        inset 0 2px 5px rgba(0, 0, 0, 0.9),
+        0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .brand {
+      position: absolute;
+      top: 18px;
+      left: 28px;
+      color: #e1e3e5;
+      font-size: clamp(14px, 2vw, 21px);
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+    }
+
+    .model {
+      position: absolute;
+      top: 22px;
+      right: 28px;
+      color: #92989e;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+    }
+
+    .empty-panel {
+      position: absolute;
+      top: 58px;
+      right: 18px;
+      bottom: 18px;
+      left: 18px;
+      border: 1px solid rgba(180, 186, 192, 0.09);
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    .screw {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border: 1px solid #656b71;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle at 35% 30%,
+        #f0f1f2,
+        #a1a6ab 45%,
+        #555b60 80%
+      );
+      box-shadow: 0 1px 2px #000;
+      z-index: 2;
+    }
+
+    .screw::after {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: 2px;
+      width: 6px;
+      height: 1px;
+      background: #44494e;
+      transform: rotate(-35deg);
+    }
+
+    .screw.tl { top: 8px; left: 8px; }
+    .screw.tr { top: 8px; right: 8px; }
+    .screw.bl { bottom: 8px; left: 8px; }
+    .screw.br { bottom: 8px; right: 8px; }
+
+    .bottom-edge {
+      height: 7px;
+      margin: 10px 22px 0;
+      border-radius: 0 0 3px 3px;
+      background: linear-gradient(
+        180deg,
+        #747a80,
+        #b9bec3,
+        #858b91
+      );
+    }
+
+    .feet {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 38px;
+    }
+
+    .foot {
+      width: 70px;
+      height: 13px;
+      border-radius: 0 0 5px 5px;
+      background: linear-gradient(
+        180deg,
+        #34383c,
+        #111315
+      );
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+    }
+
+    .caption {
+      margin-top: 28px;
+      color: #aeb3b8;
+      text-align: center;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 14px;
+      }
+
+      .device {
+        padding: 10px;
+      }
+
+      .front-panel {
+        min-height: 250px;
+        padding: 12px;
+      }
+
+      .brand {
+        top: 15px;
+        left: 18px;
+        letter-spacing: 1.5px;
+      }
+
+      .model {
+        top: 19px;
+        right: 17px;
+        font-size: 8px;
+      }
+
+      .empty-panel {
+        top: 48px;
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+      }
+
+      .feet {
+        padding: 0 20px;
+      }
+
+      .foot {
+        width: 48px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<main class="workbench">
-  <div class="caption"><span>DLMD Digital</span><span>Body / Chassis — Draft 01</span></div>
-  <section class="console" aria-label="Mockup rangka mixer digital warna silver">
-    <div class="top-lip"></div>
-    <div class="faceplate">
-      <span class="brand">DLMD DIGITAL</span>
-      <span class="model">AUDIO CONTROL UNIT</span>
-      <div class="blank-area" aria-label="Panel kosong untuk rancangan kontrol berikutnya"></div>
-      <div class="bottom-rail"></div>
-      <i class="screw s1"></i><i class="screw s2"></i>
-      <i class="screw s3"></i><i class="screw s4"></i>
-    </div>
-  </section>
-  <div class="feet"><span class="foot"></span><span class="foot"></span></div>
-  <p class="note">Tahap ini hanya rangka/body warna silver dan panel kosong. Fader, knob, meter, layar, serta tombol belum ditambahkan.</p>
-</main>
+  <main class="workspace">
+    <section class="device" aria-label="Rangka DLMD Digital warna silver">
+      <div class="top-edge"></div>
+
+      <div class="front-panel">
+        <span class="screw tl"></span>
+        <span class="screw tr"></span>
+        <span class="screw bl"></span>
+        <span class="screw br"></span>
+
+        <div class="brand">DLMD DIGITAL</div>
+        <div class="model">AUDIO PROCESSOR</div>
+
+        <!-- Panel ini sengaja dikosongkan untuk tahap berikutnya -->
+        <div class="empty-panel"></div>
+      </div>
+
+      <div class="bottom-edge"></div>
+
+      <div class="feet">
+        <div class="foot"></div>
+        <div class="foot"></div>
+      </div>
+    </section>
+
+    <p class="caption">
+      DLMD DIGITAL &nbsp; / &nbsp; CHASSIS DESIGN
+    </p>
+  </main>
 </body>
 </html>
